@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Update user</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/{id}/edit(id=${user.getId()})}" th:object="${user}">
+  <label for="name">Enter name: </label>
+  <input type="text" th:field="*{name}" id="name"/>
+  <br/>
+  <label for="name">Enter lastName: </label>
+  <input type="text" th:field="*{lastName}" id="lastName"/>
+  <br/>
+  <input type="submit" value="Updade!"/>
+</form>
+</body>
+</html>
