@@ -5,7 +5,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -15,22 +14,23 @@ import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RoleService roleService;
     private final PasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,
-                           PasswordEncoder bCryptPasswordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleService roleService, PasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
+        this.roleService = roleService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
-
 
     @Override
     @Transactional
@@ -41,7 +41,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     @Override
     public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username).get();
+        Optional<User> byUsername = userRepository.findByUsername(username);
+        return byUsername.orElse(null);
     }
 
     //
@@ -49,16 +50,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public User showUser(Long id) {
         Optional<User> user = userRepository.findById(id);
-
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("This ID not found");
+        } else {
+            return user.get();
         }
-        return user.get();
     }
 
     @Override
     @Transactional
-    public void save(User user) {
+    public void save(User user, String role) {
+        Optional<User> user1 = userRepository.findByUsername(user.getUsername());
+        if (user1.isPresent()) {
+            throw new UsernameNotFoundException("Пользователь с таким именем уже существует");
+        }
+//        Role roleByName = roleService.getRoleByName(role);
+//        if (roleByName == null) {
+//            throw new RuntimeException("Такая роль не существует ");
+//        }
+        user.setRoles(Collections.singleton(new Role(role)));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
@@ -66,14 +76,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void update(Long id, User updateUser) {
-        User user = userRepository.findById(id).get();
-        // Если пароль не изменяется, то не кодируем при обновлении
-        if (user.getPassword().equals(user.getPassword())) {
-            userRepository.save(user);
-        } else {
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            userRepository.save(user);
-        }
+//        User user = userRepository.findById(id).get();
+//        // Если пароль не изменяется, то не кодируем при обновлении
+//        if (user.getPassword().equals(user.getPassword())) {
+//            userRepository.save(user);
+//        } else {
+//            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+//            userRepository.save(user);
+//        }
     }
 
     @Override
@@ -98,7 +108,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return new org.springframework.security.core.userdetails.User(userOptional.getUsername(),
                 userOptional.getPassword(), mapRolesToAuthorities(userOptional.getRoles()));
 //        return new ru.kata.spring.boot_security.demo.security.UserDetails(user.get());
-
     }
 
     // метод преобразует коллекцию Role в Authority

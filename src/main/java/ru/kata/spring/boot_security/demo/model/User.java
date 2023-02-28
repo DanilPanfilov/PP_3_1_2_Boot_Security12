@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -12,7 +13,7 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", insertable = false, updatable = false)
     private Long id;
 
     @Column(name = "username", nullable = false)
@@ -26,7 +27,7 @@ public class User implements UserDetails {
     @Column(name = "lastname")
     private String lastName;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
@@ -42,6 +43,15 @@ public class User implements UserDetails {
         this.name = name;
         this.lastName = lastName;
         this.roles = roles;
+    }
+
+    public void addRole(Role role) {
+        if(roles==null){
+            roles = new HashSet<>();
+            roles.add(role);
+        }else{
+            roles.add(role);
+        }
     }
 
     public Long getId() {

@@ -23,7 +23,7 @@ public interface UserService extends UserDetailsService{
 
     public User showUser(Long id);
 
-    public void save(User user);
+    public void save(User user, String role);
 
     public void update(Long id, User updateUser);
 

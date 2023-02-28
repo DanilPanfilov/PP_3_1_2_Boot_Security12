@@ -1,37 +1,66 @@
 package ru.kata.spring.boot_security.demo.utils;
 
 import org.springframework.stereotype.Component;
+import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.model.Role;
 
 import javax.annotation.PostConstruct;
-import java.util.HashSet;
 
 @Component
 public class DbInit {
-//    private final UserService userService;
-//    private final RoleService roleService;
-//
-//    public DbInit(UserService userService, RoleService roleService) {
-//        this.userService = userService;
-//        this.roleService = roleService;
-//    }
-//
-//    @PostConstruct
-//    private void init() {
+    private final UserService userService;
+    private final RoleService roleService;
+
+    public DbInit(UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
+    }
+
+    @PostConstruct
+    private void init() {
 //        try {
-//            Role.getAllRoles().forEach(roleService::add);
+//            Role admin = roleService.getRoleByName("ADMIN");
+//            if (admin == null) {
+//                Role adminRole = new Role("ADMIN");
+//                roleService.addRole(adminRole);
+//            }
+//            Role user = roleService.getRoleByName("USER");
+//            if (user == null) {
+//                Role userRole = new Role("USER");
+//                roleService.addRole(userRole);
+//            }
+//        } catch (Exception e) {
 //
-//            HashSet<Role> roles = new HashSet<>();
-//            roles.add(new Role(0, "ROLE_ADMIN"));
-//            roles.add(new Role(1, "ROLE_USER"));
-//            userService.add(
-//                    new Person("Ад", "адм", 100,
-//                            roles,
-//                            "admin",
-//                            "admin")
-//            );
-//        } catch (Exception exception) {/*ignore*/}
-//    }
+//        }
+
+        try {
+            User tryUserAdmin = userService.getUserByUsername("ADMIN");
+            if (tryUserAdmin == null) {
+                User userAdmin = new User();
+                Role admin1 = roleService.getRoleByName("ADMIN");
+                userAdmin.setUsername("ADMIN");
+                userAdmin.setPassword("admin");
+                userAdmin.setName("123");
+                userAdmin.setLastName("123");
+                userAdmin.addRole(admin1);
+                userService.save(userAdmin, "ADMIN");
+            }
+            User tryUserUser = userService.getUserByUsername("USER");
+            if (tryUserUser == null) {
+                User userUser = new User();
+                Role user1 = roleService.getRoleByName("USER");
+                userUser.addRole(user1);
+                userUser.setUsername("USER");
+                userUser.setPassword("user");
+                userUser.setName("123");
+                userUser.setLastName("123");
+                userService.save(userUser, "USER");
+            }
+        } catch (Exception exception) {
+
+        }
+    }
 }
+

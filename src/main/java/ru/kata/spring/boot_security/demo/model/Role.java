@@ -10,16 +10,20 @@ import java.util.Set;
 public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", insertable = false, updatable = false)
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;
 
-//    @Transient
-    @ManyToMany(mappedBy = "roles")
+    //    @Transient
+    @ManyToMany(mappedBy = "roles",cascade = CascadeType.ALL)
     private Set<User> users;
 
     public Role() {
+    }
+
+    public Role(String name) {
+        this.name = name;
     }
 
     public Role(Long id, String name, Set<User> users) {
@@ -54,6 +58,6 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return name;
+        return getName();
     }
 }

@@ -45,7 +45,7 @@ public class UserDetails implements org.springframework.security.core.userdetail
     public boolean isEnabled() {
         return true;
     }
-// нужно чтобы получать данные аутентифицированного пользователя
+    // нужно чтобы получать данные аутентифицированного пользователя
     public User getUser(){
         return this.user;
     }
