@@ -62,7 +62,7 @@ public class AdminController {
         try {
             userService.save(user, role);
         } catch (Exception e) {
-            model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
+            model.addAttribute("usernameError", "Пользователь стаким именем уже существует");
             return "/ADMIN/registration";
         }
         return "redirect:/";// Был /admin
