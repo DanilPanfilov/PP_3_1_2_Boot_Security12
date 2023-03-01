@@ -45,11 +45,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return byUsername.orElse(null);
     }
 
-    //
     @Override
     @Transactional
     public User showUser(Long id) {
-        Optional<User> user = userRepository.findById(id);
+        Optional<User> user = userRepository.findUserById(id);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("This ID not found");
         } else {
@@ -76,14 +75,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void update(Long id, User updateUser) {
-//        User user = userRepository.findById(id).get();
-//        // Если пароль не изменяется, то не кодируем при обновлении
-//        if (user.getPassword().equals(user.getPassword())) {
-//            userRepository.save(user);
-//        } else {
-//            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-//            userRepository.save(user);
-//        }
+        User user = userRepository.findById(id).get();
+        // Если пароль не изменяется, то не кодируем при обновлении
+        if (user.getPassword().equals(user.getPassword())) {
+            userRepository.save(user);
+        } else {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            userRepository.save(user);
+        }
     }
 
     @Override
@@ -107,7 +106,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         // возвращаем только данные для Security
         return new org.springframework.security.core.userdetails.User(userOptional.getUsername(),
                 userOptional.getPassword(), mapRolesToAuthorities(userOptional.getRoles()));
-//        return new ru.kata.spring.boot_security.demo.security.UserDetails(user.get());
     }
 
     // метод преобразует коллекцию Role в Authority

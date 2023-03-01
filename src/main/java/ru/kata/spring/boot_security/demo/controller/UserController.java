@@ -22,29 +22,11 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/show")
+    @GetMapping
     public String user(Model model, Principal principal) {
         User user = userService.getUserByUsername(principal.getName());
         model.addAttribute("user", user);
         model.addAttribute("userRoles", user.getRoles());
         return "/USER/show";
     }
-
-//    private UserService userService;
-//
-//    @Autowired
-//    public void setUserService(UserService userService) {
-//        this.userService = userService;
-//    }
-//
-//    public UserController(UserService userService) {
-//        this.userService = userService;
-//    }
-//    @GetMapping("/registration")
-//    public String registrationPage(@ModelAttribute("user") User user) {
-//        return "registration";
-//    }
-    //до сюда
-
-
 }

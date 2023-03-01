@@ -2,6 +2,7 @@ package ru.kata.spring.boot_security.demo.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +37,12 @@ public class AdminController {
         return "/index";
     }
 
+    @GetMapping("/admin")// то что указывается в браузере
+    public String getAdminPage(@ModelAttribute("user") User user, Model model) {
+        model.addAttribute("users", userService.getAllUsers());
+        return "/ADMIN/admin";// на какую hml страницу смотрим
+    }
+
     @GetMapping("/registration")
     public String registrationPage(Model model) {
 //        List<Role> roles = roleService.getRoles();
@@ -61,19 +68,26 @@ public class AdminController {
         return "redirect:/";// Был /admin
     }
 
+//    @GetMapping("/{id}")
+//    public String show(@PathVariable("id") Long id, Model model) {
+//        User user = userService.showUser(id);
+//        model.addAttribute("user", user);
+//        model.addAttribute("userRoles", user.getRoles());
+//        return "/USER/show";
+//    }
+//    @GetMapping("/user")
+//    public String showUser(@ModelAttribute("user") User user, Model model){
+//        User userByUsername = userService.getUserByUsername(user.getUsername());
+//        model.addAttribute("user",userByUsername);
+//        return "/USER/show";
+//    }
+
     @GetMapping
     public String getAllUsers(Model model) {
         model.addAttribute("users", userService.getAllUsers());
         return "/ADMIN/users_table";
     }
 
-    @GetMapping("/{id}")
-    public String show(@PathVariable("id") Long id, Model model) {
-        User user = userService.showUser(id);
-        model.addAttribute("user", user);
-        model.addAttribute("userRoles", user.getRoles());
-        return "/ADMIN/show";
-    }
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Long id) {
@@ -99,4 +113,6 @@ public class AdminController {
         userService.delete(id);
         return "redirect:/admin";
     }
+
+
 }
