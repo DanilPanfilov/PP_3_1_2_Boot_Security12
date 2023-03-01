@@ -33,11 +33,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/", "/index", "/registration").permitAll() // аутентификация не требуется
-//                .antMatchers("/user").hasAnyRole("ADMIN", "USER")
-                .antMatchers("/admin").access("hasAnyRole('ADMIN')").anyRequest().authenticated()
-//                .antMatchers("/admin").hasRole("ADMIN")  // доступ только админу
-//                .anyRequest()
-//                .authenticated()
+                .antMatchers("/user").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/admin").hasRole("ADMIN")  // доступ только админу
+                .anyRequest()
+                .authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/")
