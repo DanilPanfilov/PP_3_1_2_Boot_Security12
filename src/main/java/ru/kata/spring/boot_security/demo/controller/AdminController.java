@@ -3,6 +3,8 @@ package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
+import org.springframework.security.access.method.P;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,7 @@ import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import java.security.Principal;
 import java.util.List;
 
 
@@ -68,37 +71,36 @@ public class AdminController {
         return "redirect:/";// Был /admin
     }
 
-//    @GetMapping("/{id}")
-//    public String show(@PathVariable("id") Long id, Model model) {
-//        User user = userService.showUser(id);
-//        model.addAttribute("user", user);
-//        model.addAttribute("userRoles", user.getRoles());
-//        return "/USER/show";
-//    }
-//    @GetMapping("/user")
-//    public String showUser(@ModelAttribute("user") User user, Model model){
-//        User userByUsername = userService.getUserByUsername(user.getUsername());
-//        model.addAttribute("user",userByUsername);
-//        return "/USER/show";
-//    }
-
-    @GetMapping
-    public String getAllUsers(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
-        return "/ADMIN/users_table";
+    @GetMapping("/admin/new")
+    public String registrationPageByAdmin(Model model) {
+        model.addAttribute("user", new User());
+        return "/ADMIN/new";
     }
 
+    @PostMapping("/admin/new")
+    public String useRegistrationByAdmin(@ModelAttribute("user") @Validated User user,
+                                         @ModelAttribute("role") String role,
+                                         Model model) {
+        try {
+            userService.save(user, role);
+        } catch (Exception e) {
+            model.addAttribute("usernameError", "Пользователь стаким именем уже существует");
+            return "/ADMIN/new";
+        }
+        return "redirect:/admin";
+    }
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Long id) {
         User user = userService.showUser(id);
+//        UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
         model.addAttribute("user", user);
-        List<Role> roles = (List<Role>) roleService.getRoles();
-        model.addAttribute("allRoles", roles);
+        model.addAttribute("isAdmin", user.getRoles().stream().anyMatch(el -> el.getName().equals("ROLE_ADMIN")));
+//        model.addAttribute("isUser",user.getRoles().stream().anyMatch(el-> el.getName().equals("ROLE_USER")));
         return "/ADMIN/edit";
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}/edit")
     public String update(@ModelAttribute("user") @Validated User user, @PathVariable("id") Long id,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -108,11 +110,9 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     public String delete(@PathVariable("id") Long id) {
         userService.delete(id);
         return "redirect:/admin";
     }
-
-
 }

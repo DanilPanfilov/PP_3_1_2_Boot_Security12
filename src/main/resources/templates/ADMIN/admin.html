@@ -10,6 +10,7 @@
   <thead>
   <tr>
     <th scope="col">id </th>
+    <th scope="col">username </th>
     <th scope="col">name </th>
     <th scope="col">lastName </th>
     <th scope="col">Delete User</th>
@@ -19,15 +20,16 @@
   <tbody style="border: 1px solid black;">
   <tr th:each="user: ${users}">
     <td th:utext="${user.getId()}">id</td>
+    <td th:utext="${user.getUsername()}">username</td>
     <td th:utext="${user.getName()}">name</td>
     <td th:utext="${user.getLastName()}">lastName</td>
     <td>
-      <form th:method="POST" th:action="@{/{id}/delete(id=${user.getId()})}">
+      <form th:method="DELETE" th:action="@{/{id}/delete(id=${user.getId()})}">
         <input type="submit" value="Delete"/>
       </form>
     </td>
     <td>
-      <form th:method="GET" th:action="@{/{id}(id=${user.getId()})}">
+      <form th:method="GET" th:action="@{/{id}/edit(id=${user.getId()})}">
         <input type="submit" value="Edit"/>
       </form>
     </td>
@@ -36,6 +38,11 @@
 </table>
 <br/>
 <hr/>
-<a href="/new">Create new user</a>
+<a href="/admin/new">Create new user</a>
+<br/>
+<br/>
+<form th:method="POST" th:action="@{/logout}">
+  <input type="submit" value="Logout!"/>
+</form>
 </body>
 </html>

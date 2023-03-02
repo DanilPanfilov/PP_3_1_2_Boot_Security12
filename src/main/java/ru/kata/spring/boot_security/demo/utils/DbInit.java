@@ -39,24 +39,24 @@ public class DbInit {
             User tryUserAdmin = userService.getUserByUsername("ADMIN");
             if (tryUserAdmin == null) {
                 User userAdmin = new User();
-                Role admin1 = roleService.getRoleByName("ADMIN");
+                Role admin1 = roleService.getRoleByName("ROLE_ADMIN");
                 userAdmin.setUsername("ADMIN");
                 userAdmin.setPassword("admin");
-                userAdmin.setName("123");
-                userAdmin.setLastName("123");
+                userAdmin.setName("юзер");
+                userAdmin.setLastName("юзеров");
                 userAdmin.addRole(admin1);
-                userService.save(userAdmin, "ADMIN");
+                userService.save(userAdmin, "ROLE_ADMIN");
             }
             User tryUserUser = userService.getUserByUsername("USER");
             if (tryUserUser == null) {
                 User userUser = new User();
-                Role user1 = roleService.getRoleByName("USER");
+                Role user1 = roleService.getRoleByName("ROLE_USER");
                 userUser.addRole(user1);
                 userUser.setUsername("USER");
                 userUser.setPassword("user");
-                userUser.setName("123");
-                userUser.setLastName("123");
-                userService.save(userUser, "USER");
+                userUser.setName("админ");
+                userUser.setLastName("админов");
+                userService.save(userUser, "ROLE_USER");
             }
         } catch (Exception exception) {
 

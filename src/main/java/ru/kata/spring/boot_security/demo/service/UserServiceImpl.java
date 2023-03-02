@@ -76,14 +76,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public void update(Long id, User updateUser) {
         User user = userRepository.findById(id).get();
-        // Если пароль не изменяется, то не кодируем при обновлении
-        if (user.getPassword().equals(user.getPassword())) {
-            userRepository.save(user);
-        } else {
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            userRepository.save(user);
-        }
+        user.setName(updateUser.getName());
+        user.setLastName(updateUser.getLastName());
+        user.setRoles(updateUser.getRoles());
+        userRepository.save(user);
     }
+//        // Если пароль не изменяется, то не кодируем при обновлении
+//        if (user.getPassword().equals(user.getPassword())) {
+//            userRepository.save(user);
+//        } else {
+//            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+//            userRepository.save(user);
+//        }
+
 
     @Override
     @Transactional
