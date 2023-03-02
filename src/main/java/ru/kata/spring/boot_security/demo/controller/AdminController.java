@@ -96,6 +96,8 @@ public class AdminController {
 //        UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
         model.addAttribute("user", user);
         model.addAttribute("isAdmin", user.getRoles().stream().anyMatch(el -> el.getName().equals("ROLE_ADMIN")));
+        List<Role> roles = roleService.getUniqAllRoles();
+        model.addAttribute("rolesAdd", roles);
 //        model.addAttribute("isUser",user.getRoles().stream().anyMatch(el-> el.getName().equals("ROLE_USER")));
         return "/ADMIN/edit";
     }

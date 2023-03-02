@@ -1,29 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Update user</title>
+    <meta charset="UTF-8">
+    <title>Update user</title>
 </head>
 <body>
 <form th:method="PATCH" th:action="@{/{id}/edit(id=${user.getId()})}" th:object="${user}">
-  <label for="name">Enter name: </label>
-  <input type="text" th:field="*{name}" id="name"/>
-  <br/>
-  <label for="name">Enter lastName: </label>
-  <input type="text" th:field="*{lastName}" id="lastName"/>
-  <br/>
-<!--  <input type="checkbox" id="ADMIN" name="ADMIN" th:checked="isAdmin" />-->
-<!--  <label for="ADMIN">Admin</label>&ndash;&gt;-->
-<!--  <br/>-->
-<!--  <input type="checkbox" id="USER" name="USER"  th:field="isUser">-->
-<!--  <label for="USER">User</label>&ndash;&gt;-->
-  <label for="role">Выберите роль:</label>
-  <select id="role" name="role">
-    <option th:text="ROLE_ADMIN" th:value="ROLE_ADMIN"/>
-    <option th:text="ROLE_USER" th:value="ROLE_USER"/>
-  </select>
-  <br/>
-  <input type="submit" value="Updade!"/>
+    <label for="name">Enter name: </label>
+    <input type="text" th:field="*{name}" id="name"/>
+    <br/>
+    <label for="name">Enter lastName: </label>
+    <input type="text" th:field="*{lastName}" id="lastName"/>
+    <br/>
+    <!--  <input type="checkbox" id="ADMIN" name="ADMIN" th:checked="isAdmin" />-->
+    <!--  <label for="ADMIN">Admin</label>&ndash;&gt;-->
+    <!--  <br/>-->
+    <!--  <input type="checkbox" id="USER" name="USER"  th:field="isUser">-->
+    <!--  <label for="USER">User</label>&ndash;&gt;-->
+    <label>Права доступа:
+        <input type="checkbox" name="roles"
+               th:each="role : ${rolesAdd}"
+               th:value="${role.getId()}"
+               th:text="${role.getName()}"
+               th:field="*{roles}"
+        />
+    </label>
+    <br/>
+    <br/>
+    <input type="submit" value="Updade!"/>
 
 </form>
 </body>

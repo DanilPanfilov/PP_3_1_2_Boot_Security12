@@ -20,20 +20,20 @@ public class DbInit {
 
     @PostConstruct
     private void init() {
-//        try {
-//            Role admin = roleService.getRoleByName("ADMIN");
-//            if (admin == null) {
-//                Role adminRole = new Role("ADMIN");
-//                roleService.addRole(adminRole);
-//            }
-//            Role user = roleService.getRoleByName("USER");
-//            if (user == null) {
-//                Role userRole = new Role("USER");
-//                roleService.addRole(userRole);
-//            }
-//        } catch (Exception e) {
-//
-//        }
+        try {
+            Role admin = roleService.getRoleByName("ROLE_ADMIN");
+            if (admin == null) {
+                Role adminRole = new Role("ROLE_ADMIN");
+                roleService.addRole(adminRole);
+            }
+            Role user = roleService.getRoleByName("ROLE_USER");
+            if (user == null) {
+                Role userRole = new Role("ROLE_USER");
+                roleService.addRole(userRole);
+            }
+        } catch (Exception e) {
+
+        }
 
         try {
             User tryUserAdmin = userService.getUserByUsername("ADMIN");
@@ -42,8 +42,8 @@ public class DbInit {
                 Role admin1 = roleService.getRoleByName("ROLE_ADMIN");
                 userAdmin.setUsername("ADMIN");
                 userAdmin.setPassword("admin");
-                userAdmin.setName("юзер");
-                userAdmin.setLastName("юзеров");
+                userAdmin.setName("админ");
+                userAdmin.setLastName("админов");
                 userAdmin.addRole(admin1);
                 userService.save(userAdmin, "ROLE_ADMIN");
             }
@@ -54,8 +54,8 @@ public class DbInit {
                 userUser.addRole(user1);
                 userUser.setUsername("USER");
                 userUser.setPassword("user");
-                userUser.setName("админ");
-                userUser.setLastName("админов");
+                userUser.setName("юзер");
+                userUser.setLastName("юзеров");
                 userService.save(userUser, "ROLE_USER");
             }
         } catch (Exception exception) {

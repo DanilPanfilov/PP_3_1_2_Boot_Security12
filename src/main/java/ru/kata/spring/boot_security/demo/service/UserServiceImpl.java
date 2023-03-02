@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,13 +60,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (user1.isPresent()) {
             throw new UsernameNotFoundException("Пользователь с таким именем уже существует");
         }
-//        Role roleByName = roleService.getRoleByName(role);
-//        if (roleByName == null) {
-//            throw new RuntimeException("Такая роль не существует ");
-//        }
-        user.setRoles(Collections.singleton(new Role(role)));
+
+
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        Role roleByName = roleService.getRoleByName(role);
+        user.setRoles(Collections.singleton(roleByName));
         userRepository.save(user);
+//        roleByName.setUsers(Set.of(save));
+//        roleService.
     }
 
     @Override
@@ -81,14 +79,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setRoles(updateUser.getRoles());
         userRepository.save(user);
     }
-//        // Если пароль не изменяется, то не кодируем при обновлении
-//        if (user.getPassword().equals(user.getPassword())) {
-//            userRepository.save(user);
-//        } else {
-//            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-//            userRepository.save(user);
-//        }
-
 
     @Override
     @Transactional
