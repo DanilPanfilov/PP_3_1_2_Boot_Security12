@@ -43,6 +43,7 @@ public class AdminController {
     @GetMapping("/admin")// то что указывается в браузере
     public String getAdminPage(@ModelAttribute("user") User user, Model model) {
         model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("allRoles",roleService.getUniqAllRoles());
         return "/ADMIN/admin";// на какую hml страницу смотрим
     }
 
@@ -90,6 +91,7 @@ public class AdminController {
         return "redirect:/admin";
     }
 
+
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Long id) {
         User user = userService.showUser(id);
@@ -103,12 +105,14 @@ public class AdminController {
     }
 
     @PatchMapping("/{id}/edit")
-    public String update(@ModelAttribute("user") @Validated User user, @PathVariable("id") Long id,
+    public String update(@ModelAttribute("user") @Validated User user,
+                         @ModelAttribute("role") String role,
+                         @PathVariable("id") Long id,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/ADMIN/edit";
         }
-        userService.update(id, user);
+        userService.update(id, user,role);
         return "redirect:/admin";
     }
 

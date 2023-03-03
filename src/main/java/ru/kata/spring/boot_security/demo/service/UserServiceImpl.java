@@ -60,8 +60,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (user1.isPresent()) {
             throw new UsernameNotFoundException("Пользователь с таким именем уже существует");
         }
-
-
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         Role roleByName = roleService.getRoleByName(role);
         user.setRoles(Collections.singleton(roleByName));
@@ -72,11 +70,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void update(Long id, User updateUser) {
+    public void update(Long id, User updateUser, String role) {
         User user = userRepository.findById(id).get();
+        Role roleByName = roleService.getRoleByName(role);
         user.setName(updateUser.getName());
         user.setLastName(updateUser.getLastName());
-        user.setRoles(updateUser.getRoles());
+//        user.setRoles(Collections.singleton(roleByName));
+        user.addRole(roleByName);
+//        user.setRoles(updateUser.getRoles());
         userRepository.save(user);
     }
 

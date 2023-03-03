@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutUrl("/logout")// будут стираться все куки
-                .logoutSuccessUrl("/login");//при успешном логауете , сюда идет
+                .logoutSuccessUrl("/");//при успешном логауете , сюда идет
     }
 
     @Override
