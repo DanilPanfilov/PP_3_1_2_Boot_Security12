@@ -84,9 +84,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void delete(Long id) {
-        if (userRepository.findById(id).isPresent()) {
-            userRepository.deleteById(id);
+        Optional<User> byId = userRepository.findById(id);
+        if(byId.isPresent()){
+            User user = byId.get();
+            user.setRoles(null);
+            userRepository.delete(user);
         }
+//        if (userRepository.findById(id).isPresent()) {
+//            userRepository.deleteUserById(id);
+//        }
     }
 
     // дают пользователя и по этому имени вернуть самого юзера loadUserByUsername

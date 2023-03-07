@@ -2,10 +2,7 @@ package ru.kata.spring.boot_security.demo.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
-import org.springframework.security.access.method.P;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
@@ -41,9 +37,12 @@ public class AdminController {
     }
 
     @GetMapping("/admin")// то что указывается в браузере
-    public String getAdminPage(@ModelAttribute("user") User user, Model model) {
+    public String getAdminPage(Principal principal, Model model) {//@ModelAttribute("user") User user,
+//        model.addAttribute("actUser", userService.getUserByUsername(user.getUsername()));
+        User user = userService.getUserByUsername(principal.getName());
+        model.addAttribute("user", user);
         model.addAttribute("users", userService.getAllUsers());
-        model.addAttribute("allRoles",roleService.getUniqAllRoles());
+        model.addAttribute("allRoles", roleService.getUniqAllRoles());
         return "/ADMIN/admin";// на какую hml страницу смотрим
     }
 
@@ -73,8 +72,10 @@ public class AdminController {
     }
 
     @GetMapping("/admin/new")
-    public String registrationPageByAdmin(Model model) {
+    public String registrationPageByAdmin(Model model, Principal principal) {
+        User user = userService.getUserByUsername(principal.getName());
         model.addAttribute("user", new User());
+        model.addAttribute("user1", user);
         return "/ADMIN/new";
     }
 
@@ -93,26 +94,29 @@ public class AdminController {
 
 
     @GetMapping("/{id}/edit")
-    public String edit(Model model, @PathVariable("id") Long id) {
+    public String edit(Model model, @PathVariable("id") Long id, Principal principal) {
+        User user1 = userService.getUserByUsername(principal.getName());
         User user = userService.showUser(id);
 //        UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
-        model.addAttribute("user", user);
-        model.addAttribute("isAdmin", user.getRoles().stream().anyMatch(el -> el.getName().equals("ROLE_ADMIN")));
-        List<Role> roles = roleService.getUniqAllRoles();
-        model.addAttribute("rolesAdd", roles);
+        model.addAttribute("user", user1);
+//        model.addAttribute("isAdmin", user.getRoles().stream().anyMatch(el -> el.getName().equals("ROLE_ADMIN")));
+//        List<Role> roles = roleService.getUniqAllRoles();
+//        model.addAttribute("rolesAdd", roles);
 //        model.addAttribute("isUser",user.getRoles().stream().anyMatch(el-> el.getName().equals("ROLE_USER")));
         return "/ADMIN/edit";
     }
 
     @PatchMapping("/{id}/edit")
-    public String update(@ModelAttribute("user") @Validated User user,
+    public String update(// @ModelAttribute("user")  User user,был @Validated
                          @ModelAttribute("role") String role,
                          @PathVariable("id") Long id,
+                         Principal principal,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/ADMIN/edit";
         }
-        userService.update(id, user,role);
+        User user = userService.getUserByUsername(principal.getName());
+        userService.update(id, user, role);
         return "redirect:/admin";
     }
 

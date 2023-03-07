@@ -27,7 +27,7 @@ public class User implements UserDetails {
     @Column(name = "lastname")
     private String lastName;
 
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
@@ -46,10 +46,10 @@ public class User implements UserDetails {
     }
 
     public void addRole(Role role) {
-        if(roles==null){
+        if (roles == null) {
             roles = new HashSet<>();
             roles.add(role);
-        }else{
+        } else {
             roles.add(role);
         }
     }
