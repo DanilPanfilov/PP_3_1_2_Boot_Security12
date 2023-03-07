@@ -18,9 +18,8 @@ import java.util.List;
 
 
 @Controller
-//@RequestMapping("/admin")
 public class AdminController {
-    // в КЛАССЕ может быть косяк из-за Validated он должен быть Valid
+
     private final UserService userService;
 
     private final RoleService roleService;
@@ -92,30 +91,28 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-
-    @GetMapping("/{id}/edit")
-    public String edit(Model model, @PathVariable("id") Long id, Principal principal) {
-        User user1 = userService.getUserByUsername(principal.getName());
-        User user = userService.showUser(id);
-//        UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
-        model.addAttribute("user", user1);
-//        model.addAttribute("isAdmin", user.getRoles().stream().anyMatch(el -> el.getName().equals("ROLE_ADMIN")));
-//        List<Role> roles = roleService.getUniqAllRoles();
-//        model.addAttribute("rolesAdd", roles);
-//        model.addAttribute("isUser",user.getRoles().stream().anyMatch(el-> el.getName().equals("ROLE_USER")));
-        return "/ADMIN/edit";
-    }
+//    @GetMapping("/{id}/edit")
+//    public String edit(Model model, @PathVariable("id") Long id, Principal principal) {
+////        User user1 = userService.getUserByUsername(principal.getName());
+//        User user = userService.showUser(id);
+////        UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
+//        model.addAttribute("user", user);
+////        model.addAttribute("isAdmin", user.getRoles().stream().anyMatch(el -> el.getName().equals("ROLE_ADMIN")));
+////        List<Role> roles = roleService.getUniqAllRoles();
+////        model.addAttribute("rolesAdd", roles);
+////        model.addAttribute("isUser",user.getRoles().stream().anyMatch(el-> el.getName().equals("ROLE_USER")));
+//        return "redirect:/admin";
+//    }
 
     @PatchMapping("/{id}/edit")
-    public String update(// @ModelAttribute("user")  User user,был @Validated
+    public String update(@ModelAttribute("user") @Validated User user,
                          @ModelAttribute("role") String role,
                          @PathVariable("id") Long id,
-                         Principal principal,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "/ADMIN/edit";
+            return "/ADMIN/admin";
         }
-        User user = userService.getUserByUsername(principal.getName());
+//        User user = userService.getUserByUsername(principal.getName());
         userService.update(id, user, role);
         return "redirect:/admin";
     }

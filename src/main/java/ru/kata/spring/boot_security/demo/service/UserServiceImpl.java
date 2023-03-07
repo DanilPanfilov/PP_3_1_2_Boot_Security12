@@ -71,21 +71,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void update(Long id, User updateUser, String role) {
-        User user = userRepository.findById(id).get();
+//        User user = userRepository.findById(id).get();
+//        Role roleByName = roleService.getRoleByName(role);
+//        user.setName(updateUser.getName());
+//        user.setLastName(updateUser.getLastName());
+////        user.setRoles(Collections.singleton(roleByName));
+//        user.addRole(roleByName);
+////        user.setRoles(updateUser.getRoles());
+//        userRepository.save(user);
+
+        Optional<User> byId = userRepository.findById(id);
         Role roleByName = roleService.getRoleByName(role);
-        user.setName(updateUser.getName());
-        user.setLastName(updateUser.getLastName());
-//        user.setRoles(Collections.singleton(roleByName));
-        user.addRole(roleByName);
-//        user.setRoles(updateUser.getRoles());
-        userRepository.save(user);
+        if (byId.isPresent()) {
+            User user = byId.get();
+            user.setName(updateUser.getName());
+            user.setLastName(updateUser.getLastName());
+            user.addRole(roleByName);
+            userRepository.save(user);
+        }
     }
+
 
     @Override
     @Transactional
     public void delete(Long id) {
         Optional<User> byId = userRepository.findById(id);
-        if(byId.isPresent()){
+        if (byId.isPresent()) {
             User user = byId.get();
             user.setRoles(null);
             userRepository.delete(user);

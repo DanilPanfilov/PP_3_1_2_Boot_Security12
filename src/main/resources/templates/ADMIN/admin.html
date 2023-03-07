@@ -98,17 +98,13 @@
                                                                    th:value="${user.name}"/>
                                                             <br>
                                                             <label for="lastname0"><b>Lastname</b></label>
-                                                            <input th:name="lastname" th:type="text"
+                                                            <input th:name="lastName" th:type="text"
                                                                    class="form-control" id="lastname0"
                                                                    th:value="${user.lastName}"/>
                                                             <br>
                                                             <label for="role"><b>Role</b></label>
                                                             <select multiple class="form-control form-control-sm"
                                                                     id="role" name="role" size="2" required>
-                                                                <!--                                <option th:each="role: ${allRoles}" th:value="${role.name}" th:selected="${user.roles.contains(role)}">-->
-                                                                <!--                                  <th:block th:text="${role.name}">-->
-                                                                <!--                                  </th:block>-->
-                                                                <!--                                </option>-->
                                                                 <option th:text="ROLE_ADMIN" th:value="ROLE_ADMIN"/>
                                                                 <option th:text="ROLE_USER" th:value="ROLE_USER"/>
                                                             </select>
