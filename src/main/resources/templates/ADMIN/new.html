@@ -69,13 +69,33 @@
                                 <label for="lastName"><b>Lastname</b></label>
                                 <input th:name="lastName" th:type="text" class="form-control" id="lastName" required/>
                                 <br>
-                                <label for="role"><b>Role</b></label>
+
+                                <label for="roles" class="bold">Roles</label>
                                 <select multiple class="form-control form-control-sm"
-                                        id="role" name="role" size="2" required>
-                                    <option th:text="ROLE_ADMIN" th:value="ROLE_ADMIN"/>
-                                    <option th:text="ROLE_USER" th:value="ROLE_USER"/>
+                                        id="roles" name="roles" size="2" required>
+                                    <option th:each="role: ${rolesList}"
+                                            th:value="${role.id}"
+                                            th:text="${role}">
+                                    </option>
                                 </select>
-                                <br>
+
+                                <!--                                <label for="role"><b>Role</b></label>-->
+                                <!--                                <select class="form-select" multiple aria-label="form-control form-control-sm"-->
+                                <!--                                        id="role" name="role" size="2" required>-->
+                                <!--                                    <option selected>Роль</option>-->
+                                <!--                                    <option value="ROLE_ADMIN">ROLE_ADMIN</option>-->
+                                <!--                                    <option value="ROLE_USER">ROLE_USER</option>-->
+                                <!--                                </select>-->
+                                <!--                                -->
+
+                                <!--                                <label for="role"><b>Role</b></label>-->
+                                <!--                                <select multiple class="form-control form-control-sm"-->
+                                <!--                                        id="role" name="role" size="2" required>-->
+                                <!--                                    <option th:text="ROLE_ADMIN" th:value="ROLE_ADMIN"/>-->
+                                <!--                                    <option th:text="ROLE_USER" th:value="ROLE_USER"/>-->
+                                <!--                                </select>-->
+                                <!--                                <br>-->
+
                                 <button th:type="submit" class="btn btn-success btn-lg" value="Create">Create</button>
                                 <div th:if="${usernameError!=null}" style="color: red">
                                     Пользователь с таким username существует.

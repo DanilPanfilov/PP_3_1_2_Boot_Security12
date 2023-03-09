@@ -10,6 +10,7 @@ import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 import javax.transaction.Transactional;
@@ -21,19 +22,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final PasswordEncoder bCryptPasswordEncoder;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleService roleService, PasswordEncoder bCryptPasswordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleService roleService, PasswordEncoder bCryptPasswordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 
+        this.roleRepository = roleRepository;
     }
 
     @Override
     @Transactional
     public List<User> getAllUsers() {
-        return userRepository.findAll(); //  мб за  даункастить (List<User>)
+        return userRepository.findAll();
     }
 
     @Transactional
@@ -65,22 +68,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Role roleByName = roleService.getRoleByName(role);
         user.setRoles(Collections.singleton(roleByName));
         userRepository.save(user);
-//        roleByName.setUsers(Set.of(save));
-//        roleService.
+    }
+
+    @Override
+    @Transactional
+    public void create(User user) {
+        user.setRoles(new HashSet<>(roleRepository.saveAll(user.getRoles())));
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
     }
 
     @Override
     @Transactional
     public void update(Long id, User updateUser, String role) {
-//        User user = userRepository.findById(id).get();
-//        Role roleByName = roleService.getRoleByName(role);
-//        user.setName(updateUser.getName());
-//        user.setLastName(updateUser.getLastName());
-////        user.setRoles(Collections.singleton(roleByName));
-//        user.addRole(roleByName);
-////        user.setRoles(updateUser.getRoles());
-//        userRepository.save(user);
-
         Optional<User> byId = userRepository.findById(id);
         Role roleByName = roleService.getRoleByName(role);
         if (byId.isPresent()) {
@@ -103,22 +103,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setRoles(null);
             userRepository.delete(user);
         }
-//        if (userRepository.findById(id).isPresent()) {
-//            userRepository.deleteUserById(id);
-//        }
     }
 
     // дают пользователя и по этому имени вернуть самого юзера loadUserByUsername
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        Optional<User> user = userRepository.findByUsername(username);
+//        if (user.isEmpty()) {
+//            throw new UsernameNotFoundException(String.format("User '%s' not found", username));
+//        }
+//        User userOptional = user.get();
+//        return new org.springframework.security.core.userdetails.User(userOptional.getUsername(),
+//                userOptional.getPassword(), mapRolesToAuthorities(userOptional.getRoles()));
         Optional<User> user = userRepository.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UsernameNotFoundException(String.format("User '%s' not found", username));
-        }
-        User userOptional = user.get();
-        return new org.springframework.security.core.userdetails.User(userOptional.getUsername(),
-                userOptional.getPassword(), mapRolesToAuthorities(userOptional.getRoles()));
+        return user.orElse(null);
     }
 
     // метод преобразует коллекцию Role в Authority

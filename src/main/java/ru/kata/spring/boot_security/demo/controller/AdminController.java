@@ -14,6 +14,7 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -36,8 +37,7 @@ public class AdminController {
     }
 
     @GetMapping("/admin")// то что указывается в браузере
-    public String getAdminPage(Principal principal, Model model) {//@ModelAttribute("user") User user,
-//        model.addAttribute("actUser", userService.getUserByUsername(user.getUsername()));
+    public String getAdminPage(Principal principal, Model model) {
         User user = userService.getUserByUsername(principal.getName());
         model.addAttribute("user", user);
         model.addAttribute("users", userService.getAllUsers());
@@ -47,22 +47,21 @@ public class AdminController {
 
     @GetMapping("/registration")
     public String registrationPage(Model model) {
-//        List<Role> roles = roleService.getRoles();
-//        model.addAttribute("allRoles", roles);
+
         model.addAttribute("user", new User());
+        model.addAttribute("rolesList", roleService.getRoles());
         return "/ADMIN/registration";
     }
 
     @PostMapping("/registration")
     public String useRegistration(@ModelAttribute("user") @Validated User user,
-                                  @ModelAttribute("role") String role,
                                   Model model,
                                   BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/ADMIN/registration";
         }
         try {
-            userService.save(user, role);
+            userService.create(user);
         } catch (Exception e) {
             model.addAttribute("usernameError", "Пользователь стаким именем уже существует");
             return "/ADMIN/registration";
@@ -74,7 +73,8 @@ public class AdminController {
     public String registrationPageByAdmin(Model model, Principal principal) {
         User user = userService.getUserByUsername(principal.getName());
         model.addAttribute("user", new User());
-        model.addAttribute("user1", user);
+        model.addAttribute("user1",user);
+        model.addAttribute("rolesList", roleService.getRoles());
         return "/ADMIN/new";
     }
 
@@ -83,7 +83,7 @@ public class AdminController {
                                          @ModelAttribute("role") String role,
                                          Model model) {
         try {
-            userService.save(user, role);
+            userService.create(user);
         } catch (Exception e) {
             model.addAttribute("usernameError", "Пользователь стаким именем уже существует");
             return "/ADMIN/new";
