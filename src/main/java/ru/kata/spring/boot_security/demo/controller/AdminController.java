@@ -67,7 +67,7 @@ public class AdminController {
             model.addAttribute("usernameError", "Пользователь стаким именем уже существует");
             return "/ADMIN/registration";
         }
-        return "redirect:/";// Был /admin
+        return "redirect:/";
     }
 
     @GetMapping("/admin/new")

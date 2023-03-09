@@ -18,16 +18,14 @@ public class User implements UserDetails {
 
     @Column(name = "username", nullable = false)
     private String username;
-    @Column(name = "password")
     private String password;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "lastname")
     private String lastName;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id"))

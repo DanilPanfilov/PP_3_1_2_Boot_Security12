@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+
     }
 
     @Override
@@ -86,6 +87,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             User user = byId.get();
             user.setName(updateUser.getName());
             user.setLastName(updateUser.getLastName());
+            user.setUsername(updateUser.getUsername());
             user.addRole(roleByName);
             userRepository.save(user);
         }
@@ -109,14 +111,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     // дают пользователя и по этому имени вернуть самого юзера loadUserByUsername
     @Override
     @Transactional
-//    Транзакшинал мб не надо
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(String.format("User '%s' not found", username));
         }
         User userOptional = user.get();
-        // возвращаем только данные для Security
         return new org.springframework.security.core.userdetails.User(userOptional.getUsername(),
                 userOptional.getPassword(), mapRolesToAuthorities(userOptional.getRoles()));
     }

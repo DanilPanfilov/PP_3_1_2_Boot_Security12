@@ -1,10 +1,10 @@
 package ru.kata.spring.boot_security.demo.utils;
 
 import org.springframework.stereotype.Component;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
-import ru.kata.spring.boot_security.demo.model.Role;
 
 import javax.annotation.PostConstruct;
 
@@ -32,7 +32,7 @@ public class DbInit {
                 roleService.addRole(userRole);
             }
         } catch (Exception e) {
-
+            //ignore
         }
 
         try {
@@ -59,7 +59,7 @@ public class DbInit {
                 userService.save(userUser, "ROLE_USER");
             }
         } catch (Exception exception) {
-
+            //ignore
         }
     }
 }

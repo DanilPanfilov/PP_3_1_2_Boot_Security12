@@ -102,6 +102,16 @@
                                                                    class="form-control" id="lastname0"
                                                                    th:value="${user.lastName}"/>
                                                             <br>
+                                                            <label for="username0"><b>Username</b></label>
+                                                            <input th:name="username" th:type="text"
+                                                                   class="form-control" id="username0"
+                                                                   th:value="${user.username}"/>
+                                                            <br>
+                                                            <label for="myRole"><b>Role</b></label>
+                                                            <input th:name="role" th:type="text"
+                                                                   class="form-control" id="myRole"
+                                                                   th:value="${user.roles}" disabled/>
+                                                            <br>
                                                             <label for="role"><b>Role</b></label>
                                                             <select multiple class="form-control form-control-sm"
                                                                     id="role" name="role" size="2" required>
@@ -152,6 +162,11 @@
                                                             <input th:name="username" th:type="text"
                                                                    class="form-control"
                                                                    id="username1" th:value="${user.username}" disabled/>
+                                                            <br>
+                                                            <label for="myRole1"><b>Role</b></label>
+                                                            <input th:name="role" th:type="text"
+                                                                   class="form-control" id="myRole1"
+                                                                   th:value="${user.roles}" disabled/>
                                                             <br>
                                                         </div>
 
