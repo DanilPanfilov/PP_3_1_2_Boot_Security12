@@ -35,7 +35,7 @@ public class User implements UserDetails {
     private String lastName;
 
     @ManyToMany(cascade = CascadeType.ALL)
-//    @Fetch(FetchMode.JOIN)
+    @Fetch(FetchMode.JOIN)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
