@@ -34,9 +34,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {// конфигурируем сам спринг секурити и авторизацию
         http
                 .authorizeRequests()
-                .antMatchers("/", "/index", "/registration").permitAll() // аутентификация не требуется
+                .antMatchers("/", "/index","/api/**").permitAll() // аутентификация не требуется
                 .antMatchers("/user").hasAnyRole("ADMIN", "USER")
                 .antMatchers("/admin").hasRole("ADMIN")  // доступ только админу
+//                0) Отключаем секьюрность через .antMatchers("ссылкаНаРест/**").permitAll() +
+//                ставим .csrf().disable(), чтобы проходили не только гет запросы
                 .anyRequest()
                 .authenticated()
                 .and()

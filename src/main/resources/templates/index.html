@@ -10,9 +10,6 @@
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 <body>
-<!--<sec:authorize access="isAuthenticated()">-->
-<!--    <% response.sendRedirect("/"); %>-->
-<!--</sec:authorize>-->
 <form method="POST" action="/process_login">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
     <div class="text-center p-5">

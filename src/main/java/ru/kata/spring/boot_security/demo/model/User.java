@@ -1,11 +1,15 @@
 package ru.kata.spring.boot_security.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +23,10 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "username", nullable = false)
+    @NotEmpty(message = "Не может быть пустым")
     private String username;
+    @NotEmpty(message = "Не может быть пустым")
+    @JsonIgnore
     private String password;
 
     @Column(name = "name", nullable = false)
@@ -28,11 +35,13 @@ public class User implements UserDetails {
     private String lastName;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
+//    @Fetch(FetchMode.JOIN)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
     private Set<Role> roles;
+
+
 
     public User() {
     }
@@ -129,4 +138,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }
