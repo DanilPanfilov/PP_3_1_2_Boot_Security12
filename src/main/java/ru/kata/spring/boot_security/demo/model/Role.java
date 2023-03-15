@@ -1,8 +1,6 @@
 package ru.kata.spring.boot_security.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -13,13 +11,14 @@ import java.util.Set;
 public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     @Column(name = "id", insertable = false, updatable = false)
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;
 
     //    @Transient
-    @ManyToMany(mappedBy = "roles",cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<User> users;
 
@@ -61,6 +60,7 @@ public class Role implements GrantedAuthority {
     }
 
     @Override
+    @JsonIgnore
     public String getAuthority() {
         return name;
     }

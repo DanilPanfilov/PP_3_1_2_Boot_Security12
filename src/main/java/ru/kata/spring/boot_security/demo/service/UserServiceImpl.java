@@ -73,26 +73,47 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void create(User user) {
-        user.setRoles(new HashSet<>(roleRepository.saveAll(user.getRoles())));
+//        user.setRoles(new HashSet<>(roleRepository.saveAll(user.getRoles())));
+        setUserRoles(user);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
-    @Override
+    //    @Override
+//    @Transactional
+//    public void update(User updateUser) {
+//        Optional<User> byId = userRepository.findById(updateUser.getId());
+//        updateUser.setPassword(byId.get().getPassword());
+//        updateUser.getRoles().stream().forEach(s -> {
+//            Role roleByName = roleService.getRoleByName(s.getName());
+//            if (roleByName != null) {
+//                byId.get().addRole(roleByName);
+//            }
+//        });
+////        if (byId.isPresent()) {
+////            User user = byId.get();
+////            user.setName(updateUser.getName());
+////            user.setLastName(updateUser.getLastName());
+////            user.setUsername(updateUser.getUsername());
+//        userRepository.save(updateUser);
+//
+//    }
     @Transactional
-    public void update(Long id, User updateUser, String role) {
-        Optional<User> byId = userRepository.findById(id);
-        Role roleByName = roleService.getRoleByName(role);
-        if (byId.isPresent()) {
-            User user = byId.get();
-            user.setName(updateUser.getName());
-            user.setLastName(updateUser.getLastName());
-            user.setUsername(updateUser.getUsername());
-            user.addRole(roleByName);
-            userRepository.save(user);
-        }
+    @Override
+    public void update(User user) {
+        Optional<User> byId = userRepository.findById(user.getId());
+        user.setPassword(byId.get().getPassword());
+        setUserRoles(user);
+        userRepository.save(user);
     }
 
+    @Transactional
+    @Override
+    public void setUserRoles(User user) {
+        user.setRoles(user.getRoles().stream()
+                .map(r -> roleService.getRoleByName(r.getName()))
+                .collect(Collectors.toSet()));
+    }
 
     @Override
     @Transactional
@@ -105,17 +126,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
-    // дают пользователя и по этому имени вернуть самого юзера loadUserByUsername
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        Optional<User> user = userRepository.findByUsername(username);
-//        if (user.isEmpty()) {
-//            throw new UsernameNotFoundException(String.format("User '%s' not found", username));
-//        }
-//        User userOptional = user.get();
-//        return new org.springframework.security.core.userdetails.User(userOptional.getUsername(),
-//                userOptional.getPassword(), mapRolesToAuthorities(userOptional.getRoles()));
         Optional<User> user = userRepository.findByUsername(username);
         return user.orElse(null);
     }

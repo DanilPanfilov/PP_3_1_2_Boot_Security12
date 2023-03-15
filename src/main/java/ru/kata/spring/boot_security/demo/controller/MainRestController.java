@@ -4,14 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -36,11 +34,11 @@ public class MainRestController {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
-    @GetMapping("/userByUsername")
-    public ResponseEntity<User> getUserByUsername(Principal principal) {
-        User user = userService.getUserByUsername(principal.getName());
-        return ResponseEntity.ok(user);
-    }
+//    @GetMapping("/userByUsername")
+//    public ResponseEntity<User> getUserByUsername(Principal principal) {
+//        User user = userService.getUserByUsername(principal.getName());
+//        return ResponseEntity.ok(user);
+//    }
 
     @PostMapping("/createUser")
     public ResponseEntity<HttpStatus> createUser(@RequestBody @Valid User user,
@@ -51,20 +49,19 @@ public class MainRestController {
         try {
             userService.create(user);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);// или тут редирект
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}/update")
+    @PatchMapping("/update")
     public ResponseEntity<HttpStatus> update(@RequestBody @Valid User user,
-                                             String role,
-                                             @PathVariable("id") Long id,
+//                                             @PathVariable("id") Long id,
                                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        userService.update(id, user, role);
+        userService.update( user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
