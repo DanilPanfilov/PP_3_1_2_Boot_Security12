@@ -29,6 +29,7 @@
 			<scope>runtime</scope><!-- -->
 			<optional>true</optional>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
@@ -36,12 +37,6 @@
 			<version>8.0.0.Final</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
-		<dependency>
-			<groupId>org.modelmapper</groupId>
-			<artifactId>modelmapper</artifactId>
-			<version>3.1.1</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -80,6 +75,7 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.31</version>
 		</dependency>
+
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity5</artifactId>
